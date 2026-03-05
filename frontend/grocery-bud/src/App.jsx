@@ -7,7 +7,9 @@ import { nanoid } from "nanoid";
 import Form from "./components/Form";
 import "./App.css";
 
-const BASE_URL = "http://127.0.0.1:8000/api/grocery";
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+const BASE_URL = `${API_BASE_URL}/api/grocery`;
+
 const App = () => {
   const [items, setItems] = useState([]);
   const [editId, setEditId] = useState(null);
@@ -42,16 +44,16 @@ const App = () => {
     }
   };
 
-const removeItem = async (itemId) => {
-  try {
-    const res = await fetch(`${BASE_URL}/${itemId}/`, { method: "DELETE" });
-    if (!res.ok) throw new Error();
-    setItems((prev) => prev.filter((item) => item.id !== itemId));
-    toast.success("Item deleted");
-  } catch {
-    toast.error("Could not delete item");
-  }
-};
+  const removeItem = async (itemId) => {
+    try {
+      const res = await fetch(`${BASE_URL}/${itemId}/`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setItems((prev) => prev.filter((item) => item.id !== itemId));
+      toast.success("Item deleted");
+    } catch {
+      toast.error("Could not delete item");
+    }
+  };
 
   const addItem = async (itemName) => {
     try {
@@ -69,24 +71,24 @@ const removeItem = async (itemId) => {
     }
   };
 
-const updateItemName = async (newName) => {
-  try {
-    const res = await fetch(`${BASE_URL}/${editId}/`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName }),
-    });
-    if (!res.ok) throw new Error();
-    const updated = await res.json();
-    setItems((prev) =>
-      prev.map((item) => (item.id === editId ? updated.data : item)),
-    );
-    setEditId(null);
-    toast.success("Item updated");
-  } catch {
-    toast.error("Could not update item");
-  }
-};
+  const updateItemName = async (newName) => {
+    try {
+      const res = await fetch(`${BASE_URL}/${editId}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName }),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      setItems((prev) =>
+        prev.map((item) => (item.id === editId ? updated.data : item)),
+      );
+      setEditId(null);
+      toast.success("Item updated");
+    } catch {
+      toast.error("Could not update item");
+    }
+  };
 
   return (
     <section className="section-center">
