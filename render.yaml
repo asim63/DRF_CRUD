@@ -2,6 +2,7 @@ services:
   - type: web
     name: drf-crud-api
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
     startCommand: python manage.py migrate && gunicorn drf_crud.wsgi:application
     healthCheckPath: /api/grocery/
@@ -35,3 +36,4 @@ services:
 
 databases:
   - name: drf-crud-db
+    plan: free
