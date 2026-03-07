@@ -3,12 +3,12 @@ import Items from "./components/Items";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { nanoid } from "nanoid";
 import Form from "./components/Form";
 import "./App.css";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
-const BASE_URL = `${API_BASE_URL}/api/grocery`;
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api/grocery"
+).replace(/\/$/, "");
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/`);
+        const res = await fetch(`${API_BASE_URL}/`);
         if (!res.ok) throw new Error("Failed to fetch items");
         const data = await res.json();
         setItems(data);
@@ -31,7 +31,7 @@ const App = () => {
 
   const editCompleted = async (itemId) => {
     try {
-      const res = await fetch(`${BASE_URL}/${itemId}/toggle/`, {
+      const res = await fetch(`${API_BASE_URL}/${itemId}/toggle/`, {
         method: "POST",
       });
       if (!res.ok) throw new Error();
@@ -46,7 +46,7 @@ const App = () => {
 
   const removeItem = async (itemId) => {
     try {
-      const res = await fetch(`${BASE_URL}/${itemId}/`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE_URL}/${itemId}/`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       setItems((prev) => prev.filter((item) => item.id !== itemId));
       toast.success("Item deleted");
@@ -57,7 +57,7 @@ const App = () => {
 
   const addItem = async (itemName) => {
     try {
-      const res = await fetch(`${BASE_URL}/`, {
+      const res = await fetch(`${API_BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: itemName, completed: false }),
@@ -73,7 +73,7 @@ const App = () => {
 
   const updateItemName = async (newName) => {
     try {
-      const res = await fetch(`${BASE_URL}/${editId}/`, {
+      const res = await fetch(`${API_BASE_URL}/${editId}/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newName }),
