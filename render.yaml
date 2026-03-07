@@ -5,7 +5,6 @@ services:
     plan: free
     rootDir: backend
     buildCommand: bash build.sh
-    preDeployCommand: python manage.py migrate --no-input
     startCommand: gunicorn drf_crud.wsgi:application
     healthCheckPath: /api/health/
     envVars:
